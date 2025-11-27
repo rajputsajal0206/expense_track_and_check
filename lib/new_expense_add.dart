@@ -1,0 +1,249 @@
+import 'package:expense_track_and_check/utility/utility.dart';
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
+class NewExpenseAdd extends StatefulWidget {
+  const NewExpenseAdd({super.key});
+
+  @override
+  State<NewExpenseAdd> createState() => _NewExpenseAddState();
+}
+
+class _NewExpenseAddState extends State<NewExpenseAdd> {
+  final TextEditingController _titlecontroller = TextEditingController();
+  final TextEditingController _amountcontroller = TextEditingController();
+  bool _isTitleFocused = false;
+  bool _isamountFocused = false;
+  String? _titleErrorText;
+  String? _amountErrorText;
+  DateTime? _selectedDate;
+
+  @override
+  void initState() {
+    _titlecontroller;
+    _amountcontroller;
+    _titlecontroller.addListener(_validateInput);
+    _amountcontroller.addListener(_validateAmountInput);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _titlecontroller.dispose();
+    _amountcontroller.dispose();
+    super.dispose();
+  }
+
+  void _validateAmountInput() {
+    final userInput = _amountcontroller.text;
+    final amountRegex = RegExp(r'^[0-9]*$');
+
+    if (userInput.isNotEmpty && !amountRegex.hasMatch(userInput)) {
+      setState(() {
+        _amountErrorText = kAmountInputError;
+      });
+      return;
+    }
+    setState(() {
+      _amountErrorText = null;
+    });
+  }
+
+  void _validateInput() {
+    final userInput = _titlecontroller.text;
+    final alphanumericRegex = RegExp(r'^[a-zA-Z0-9]*$');
+
+    if (userInput.isEmpty) {
+      setState(() {
+        _titleErrorText = null;
+      });
+
+      return;
+    } else if (!alphanumericRegex.hasMatch(userInput)) {
+      setState(() {
+        _titleErrorText = kAlphaNumericError;
+      });
+      return;
+    } else if (userInput.length > 50 + 1) {
+      setState(() {
+        _titleErrorText = kInputLengthError;
+      });
+      return;
+    }
+
+    setState(() {
+      _titleErrorText = null;
+    });
+  }
+
+  Future<void> _pickDate() async {
+    final DateTime now = DateTime.now();
+    final DateTime initialDate = DateTime(now.year - 2, now.month);
+
+    final DateTime? picked = await showDatePicker(
+        context: context,
+        firstDate: initialDate,
+        lastDate: now,
+        initialDate: now);
+
+    if (picked == null) {
+      setState(() {
+        _selectedDate = picked;
+      });
+      return;
+    }
+    setState(() {
+      _selectedDate = picked;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
+      child: Column(
+        children: <Widget>[
+          TextField(
+            controller: _titlecontroller,
+            decoration: InputDecoration(
+              //label and labelText, both used for same purpose
+              //label: Text('Title'),
+              labelText: 'Title',
+              errorText: _titleErrorText,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8.0),
+                borderSide: BorderSide(
+                  color: _isTitleFocused
+                      ? Colors.black // Active color
+                      : Colors.grey, // Inactive color
+                ),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8.0),
+                borderSide: BorderSide(
+                  color: _isTitleFocused
+                      ? Colors.black // Active color
+                      : Colors.grey, // Inactive color
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8.0),
+                borderSide: BorderSide(
+                  color: _titlecontroller.text.length >= 5 &&
+                          _titleErrorText == null
+                      ? Colors.green // 5+ chars and valid
+                      : Colors
+                          .black, // Focused but less than 5 chars or invalid
+                ),
+              ),
+              errorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8.0),
+                borderSide: const BorderSide(color: Colors.redAccent),
+              ),
+              focusedErrorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8.0),
+                borderSide: const BorderSide(color: Colors.red),
+              ),
+            ),
+            onTap: () {
+              setState(() {
+                _isTitleFocused = true;
+              });
+            },
+            onTapOutside: (event) {
+              setState(() {
+                _isTitleFocused = false;
+              });
+            },
+            maxLength: 50,
+          ),
+          const SizedBox(
+            height: 8,
+          ),
+          Row(
+            children: <Widget>[
+              Expanded(
+                child: TextField(
+                  keyboardType: TextInputType.number,
+                  controller: _amountcontroller,
+                  decoration: InputDecoration(
+                    label: const Text('Amount'),
+                    errorText: _amountErrorText,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                      borderSide: BorderSide(
+                        color: _isamountFocused
+                            ? Colors.black // Active color
+                            : Colors.grey, // Inactive color
+                      ),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                      borderSide: BorderSide(
+                        color: _isamountFocused
+                            ? Colors.black // Active color
+                            : Colors.grey, // Inactive color
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                      borderSide: BorderSide(
+                        color: _amountErrorText == null
+                            ? Colors.green // 5+ chars and valid
+                            : Colors
+                                .black, // Focused but less than 5 chars or invalid
+                      ),
+                    ),
+                    errorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                      borderSide: const BorderSide(color: Colors.redAccent),
+                    ),
+                    focusedErrorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                      borderSide: const BorderSide(color: Colors.red),
+                    ),
+                  ),
+                  onTap: () {
+                    setState(() {
+                      _isamountFocused = true;
+                    });
+                  },
+                  onTapOutside: (event) {
+                    setState(() {
+                      _isamountFocused = false;
+                    });
+                  },
+                ),
+              ),
+              const Spacer(),
+              Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    Flexible(
+                      child: Text(_selectedDate == null
+                          ? 'No Date Selected'
+                          : DateFormat('yyyy-MM-dd').format(_selectedDate!)),
+                    ),
+                    const SizedBox(
+                      width: 2,
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        _pickDate();
+                      },
+                      icon: const Icon(Icons.calendar_month),
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
+          const SizedBox(
+            height: 8,
+          ),
+        ],
+      ),
+    );
+  }
+}

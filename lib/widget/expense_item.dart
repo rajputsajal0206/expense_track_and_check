@@ -11,43 +11,43 @@ class ExpenseItem extends StatelessWidget {
     final amountString = expense.expenseAmount.toStringAsFixed(2);
     return Card(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0,vertical: 20),
-          child: Column(
-            //crossAxisAlignment: CrossAxisAlignment.start,
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20),
+      child: Column(
+        //crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            expense.title,
+            style: const TextStyle(
+              color: Colors.red,
+            ),
+          ),
+          const SizedBox(
+            height: 8,
+          ),
+          Row(
             children: [
               Text(
-                expense.title,
+                'Rs.$amountString',
                 style: const TextStyle(
-                  color: Colors.red,
-                ),
+                    fontSize: 16, fontWeight: FontWeight.normal),
+              ),
+              const Spacer(),
+              Icon(
+                categoryIconsMapping[expense.expenseCategory],
+                color: Colors.black12,
+                size: 16,
               ),
               const SizedBox(
-                height: 8,
+                width: 4,
               ),
-              Row(
-                children: [
-                  Text(
-                    'Rs.$amountString',
-                    style: const TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.normal),
-                  ),
-                  const Spacer(),
-                  const Icon(
-                    Icons.watch,
-                    color: Colors.black12,
-                    size: 16,
-                  ),
-                  const SizedBox(
-                    width: 4,
-                  ),
-                  Text(
-                    expense.formattedDate,
-                    overflow: TextOverflow.ellipsis,
-                  )
-                ],
+              Text(
+                expense.formattedDate,
+                overflow: TextOverflow.ellipsis,
               )
             ],
-          ),
-        ));
+          )
+        ],
+      ),
+    ));
   }
 }
