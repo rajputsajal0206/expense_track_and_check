@@ -1,3 +1,4 @@
+import 'package:expense_track_and_check/new_expense_add.dart';
 import 'package:expense_track_and_check/widget/expense_list.dart';
 import 'package:flutter/material.dart';
 
@@ -32,10 +33,20 @@ class _ExpenseTrackerState extends State<ExpenseTracker> {
           'TRACK and CHECK EXPENSE',
           style: TextStyle(
             color: Colors.red,
-              fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.bold,
           ),
         ),
-        actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.add))],
+        actions: [
+          IconButton(
+              onPressed: () {
+                showModalBottomSheet(
+                    isScrollControlled: true,
+                    useSafeArea: true,
+                    context: context,
+                    builder: ((ctx) => const NewExpenseAdd()));
+              },
+              icon: const Icon(Icons.add))
+        ],
       ),
       backgroundColor: Colors.grey,
       body: Column(
