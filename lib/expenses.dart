@@ -31,6 +31,23 @@ class _ExpenseTrackerState extends State<ExpenseTracker> {
     });
   }
 
+  void _removeExpense(Expense expense) {
+    final expenseIndex = _expensesList.indexOf(expense);
+    setState(() {
+      _expensesList.remove(expense);
+    });
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: const Text('Expesnse is successfully removed'),
+      action: SnackBarAction(
+          label: 'UNDO',
+          onPressed: () {
+            setState(() {
+              _expensesList.insert(expenseIndex, expense);
+            });
+          }),
+    ));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,29 +62,55 @@ class _ExpenseTrackerState extends State<ExpenseTracker> {
         actions: [
           IconButton(
               onPressed: () {
-                showModalBottomSheet(
-                    isScrollControlled: true,
-                    useSafeArea: true,
-                    context: context,
-                    builder: ((ctx) => NewExpenseAdd(
-                          addExpense: _addExpenses,
-                        )));
+                openNewExpenseModal(context, _addExpenses);
               },
               icon: const Icon(Icons.add))
         ],
       ),
-      backgroundColor: Colors.grey,
+      backgroundColor: const Color.fromARGB(255, 220, 189, 252),
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
         child: Column(
           children: <Widget>[
             const Text('We will Place CHART here'),
             Expanded(
-              child: ExpenseList(expensesList: _expensesList),
+              child: _expensesList.isEmpty
+                  ? Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text(
+                              'No Expense added yet. Click ADD EXPENSE to add new expense'),
+                          const SizedBox(
+                            height: 4,
+                          ),
+                          TextButton(
+                              onPressed: () {
+                                openNewExpenseModal(context, _addExpenses);
+                              },
+                              child: const Text('ADD EXPENSE'))
+                        ],
+                      ),
+                    )
+                  : ExpenseList(
+                      expensesList: _expensesList,
+                      removeExpense: _removeExpense,
+                    ),
             ),
           ],
         ),
       ),
     );
   }
+}
+
+void openNewExpenseModal(BuildContext context, Function(Expense) addExpense) {
+  showModalBottomSheet(
+    isScrollControlled: true,
+    useSafeArea: true,
+    context: context,
+    builder: (ctx) => NewExpenseAdd(
+      addExpense: addExpense,
+    ),
+  );
 }
