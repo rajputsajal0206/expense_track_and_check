@@ -25,6 +25,12 @@ class _ExpenseTrackerState extends State<ExpenseTracker> {
         expenseDate: DateTime.now())
   ];
 
+  void _addExpenses(Expense expense) {
+    setState(() {
+      _expensesList.add(expense);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,19 +49,24 @@ class _ExpenseTrackerState extends State<ExpenseTracker> {
                     isScrollControlled: true,
                     useSafeArea: true,
                     context: context,
-                    builder: ((ctx) => const NewExpenseAdd()));
+                    builder: ((ctx) => NewExpenseAdd(
+                          addExpense: _addExpenses,
+                        )));
               },
               icon: const Icon(Icons.add))
         ],
       ),
       backgroundColor: Colors.grey,
-      body: Column(
-        children: <Widget>[
-          const Text('We will Place CHART here'),
-          Expanded(
-            child: ExpenseList(expensesList: _expensesList),
-          ),
-        ],
+      body: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+        child: Column(
+          children: <Widget>[
+            const Text('We will Place CHART here'),
+            Expanded(
+              child: ExpenseList(expensesList: _expensesList),
+            ),
+          ],
+        ),
       ),
     );
   }
