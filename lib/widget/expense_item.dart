@@ -17,9 +17,8 @@ class ExpenseItem extends StatelessWidget {
         children: [
           Text(
             expense.title,
-            style: const TextStyle(
-              color: Colors.red,
-            ),
+            style: Theme.of(context).textTheme.titleLarge,
+            textAlign: TextAlign.start,
           ),
           const SizedBox(
             height: 8,

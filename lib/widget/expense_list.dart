@@ -15,6 +15,12 @@ class ExpenseList extends StatelessWidget {
           //expensesList[index] --> Sends Prticular expense from the list
           Dismissible(
             key: ValueKey(expensesList[index]),
+            background: Container(
+              color: Theme.of(context).colorScheme.error,
+              margin: EdgeInsets.symmetric(
+                horizontal: Theme.of(context).cardTheme.margin!.horizontal,
+              ),
+            ),
             onDismissed: (DismissDirection direction){
               removeExpense(expensesList[index]);
             },

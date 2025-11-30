@@ -43,3 +43,26 @@ IconData? _getCategoryIcons(Category category) {
 
   return Icons.work;
 }
+
+class ExpenseBucket {
+  ExpenseBucket({
+    required this.category,
+    required this.categoryExpenseList,
+  });
+  List<Expense> categoryExpenseList;
+  Category category;
+
+  ExpenseBucket.getCategoryList(List<Expense> expenses, this.category)
+      : categoryExpenseList = expenses
+            .where((expense) => expense.expenseCategory == category)
+            .toList();
+
+  double sum = 0;
+
+  double get getTotalCategoryExpense {
+    for (final expense in categoryExpenseList) {
+      sum += expense.expenseAmount;
+    }
+    return sum;
+  }
+}
